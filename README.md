@@ -1,23 +1,23 @@
 # Installing Minikube on Ubuntu
 
 Two environments covered:
-- **WSL (Windows Subsystem for Linux)** — local development on Windows
-- **AWS EC2 Ubuntu** — cloud-based Kubernetes playground or CI environment
+- **WSL (Windows Subsystem for Linux)** local development on Windows
+- **AWS EC2 Ubuntu** cloud-based Kubernetes playground or CI environment
 
 ---
 
 ## Table of Contents
 
-- [Prerequisites — Both Environments](#prerequisites--both-environments)
+- [Prerequisites Both Environments](#prerequisites--both-environments)
 - [Install on WSL Ubuntu](#install-on-wsl-ubuntu)
 - [Install on AWS EC2 Ubuntu](#install-on-aws-ec2-ubuntu)
-- [Post-Install — Both Environments](#post-install--both-environments)
+- [Post-Install Both Environments](#post-install--both-environments)
 - [Common Commands](#common-commands)
 - [Troubleshooting](#troubleshooting)
 
 ---
 
-## Prerequisites — Both Environments
+## Prerequisites Both Environments
 
 You need **kubectl** installed before using minikube.
 
