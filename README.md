@@ -36,12 +36,14 @@ sudo mv kubectl /usr/local/bin/
 ```bash
 kubectl version --client
 ```
-
+>it should return something like this
+>Client Version: v1.36.2
+>Kustomize Version: v5.8.1
 ## Install on WSL Ubuntu
 
-### 1. Check WSL Version (must be WSL 2)
+### Check WSL Version (must be WSL 2)
 
-Run this in **PowerShell on Windows**:
+>Run this in **PowerShell on Windows**:
 
 ```powershell
 wsl --list --verbose
@@ -54,7 +56,7 @@ wsl --set-version Ubuntu 2
 
 ### 2. Install Docker in WSL (recommended driver) skip to stage 4 if you already have docker
 
-Minikube on WSL works best with the **Docker driver** — no VM needed.
+>Minikube on WSL works best with the **Docker driver** — no VM needed.
 
 > Update packages
 ```bash
