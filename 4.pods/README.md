@@ -48,12 +48,21 @@ Docker already runs containers. Kubernetes could have made "container" the base 
 | A container restarting inside a Pod (e.g. a crash) does **not** create a new Pod. | The Pod's identity, IP, and volumes stay the same; only the container process restarts. |
 
 ## Reading a Pod's Status
-
+> quick list: name, ready count, status, restarts, age
 ```bash
-kubectl get pods                    # quick list: name, ready count, status, restarts, age
-kubectl describe pod web-demo       # full detail: events, conditions, container states
-kubectl logs web-demo               # stdout/stderr of the (single) container
-kubectl logs web-demo -c <name>     # needed when the Pod has multiple containers
+kubectl get pods                    
+```
+>full detail: events, conditions, container states
+```bash
+kubectl describe pod web-demo
+```
+>stdout/stderr of the (single) container
+```bash
+kubectl logs web-demo
+```
+>needed when the Pod has multiple containers
+```bash
+kubectl logs web-demo -c <name>
 ```
 
 The `STATUS` column you'll see most often:
@@ -109,7 +118,8 @@ spec:
 # The container's name *within the Pod*. Used when
 # you have multiple containers and need to target
 # one specifically, e.g. `kubectl logs web-demo -c web-demo`.
-      image: web-demo:1.0            
+      image: web-demo
+      imagePullPolicy: Never  # Uses your local image without checking an online registry           
 # The container image to pull and run, with an
 # explicit tag. Always pin a specific tag (never
 # `latest`) so what runs is predictable and
