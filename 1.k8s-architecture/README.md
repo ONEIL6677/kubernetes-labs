@@ -1,13 +1,13 @@
 # Kubernetes Architecture & Purpose (vs. Docker)
 
-A practical guide to what Kubernetes actually is, how it's built, and why it exists on top of — not instead of — Docker.
+A practical guide to what Kubernetes actually is, how it's built, and why it exists on top of not instead of Docker.
 
 ---
 
 ## 1. The Core Idea
 
 **Docker** runs one or more containers on **one machine**.
-**Kubernetes** runs containers across a **fleet of machines**, and keeps them running, scaled, and healthy without you babysitting them.
+**Kubernetes** runs containers across a **fleet of machines (nodes)**, and keeps them running, scaled, and healthy without you babysitting them.
 
 ```mermaid
 graph LR
@@ -219,7 +219,3 @@ Nothing here is imperative — you never told Kubernetes *how* to start containe
 Kubernetes has real operational cost (more moving parts, a learning curve, cluster upkeep) — it's not "better than Docker," it solves a different, larger problem: *fleet management*, not *containerization* itself.
 
 ---
-
-## Further Reading
-- [kubernetes.io/docs/concepts](https://kubernetes.io/docs/concepts/)
-- [Docker docs](https://docs.docker.com/)
