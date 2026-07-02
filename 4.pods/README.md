@@ -64,7 +64,14 @@ kubectl logs web-demo
 ```bash
 kubectl logs web-demo -c <name>
 ```
-
+> delete pod in default namespace
+```bash
+kubectl delete pod <pod-name>
+```
+> delete pode in another namespace
+```bash
+kubectl delete pod <pod-name> -n name-of-namespace
+```
 The `STATUS` column you'll see most often:
 
 | Status | Meaning |
@@ -118,7 +125,7 @@ spec:
 # The container's name *within the Pod*. Used when
 # you have multiple containers and need to target
 # one specifically, e.g. `kubectl logs web-demo -c web-demo`.
-      image: web-demo
+      image: web-demo:1.0
       imagePullPolicy: Never  # Uses your local image without checking an online registry           
 # The container image to pull and run, with an
 # explicit tag. Always pin a specific tag (never

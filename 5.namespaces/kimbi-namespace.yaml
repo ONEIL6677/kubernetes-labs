@@ -1,0 +1,6 @@
+# CREATING A NAMESPACE CALLED kimbi
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kimbi       # creates a new namespace called "kimbi"
