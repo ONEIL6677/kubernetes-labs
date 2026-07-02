@@ -103,7 +103,7 @@ kops version
 
 ---
 
-## Step 2 — Configure AWS CLI
+## Step 2 Configure AWS CLI
 
 > Configure AWS credentials — you'll be prompted for Access Key, Secret Key, region, and output format
 
@@ -119,7 +119,7 @@ aws sts get-caller-identity
 
 ---
 
-## Step 3 — Create IAM User for kops
+## Step 3 Create IAM User for kops
 
 kops needs broad AWS permissions to provision infrastructure.
 
@@ -168,11 +168,11 @@ export AWS_SECRET_ACCESS_KEY=<kops-user-secret-access-key>
 
 ---
 
-## Step 4 — Configure Route53 DNS
+## Step 4 Configure Route53 DNS
 
 kops requires a DNS zone to assign hostnames to the cluster API and nodes.
 
-### Option A — You own a domain (recommended for production)
+### Option A You own a domain (recommended for production)
 
 > Create a hosted zone for your subdomain in Route53
 
@@ -188,7 +188,7 @@ aws route53 create-hosted-zone \
 aws route53 list-hosted-zones | grep -A 5 "k8s.yourdomain.com"
 ```
 
-### Option B — Gossip-based DNS (no domain required, good for testing)
+### Option B Gossip-based DNS (no domain required, good for testing)
 
 > kops supports gossip DNS — just name your cluster ending in `.k8s.local` and no Route53 setup is needed
 
@@ -200,7 +200,7 @@ export NAME=mycluster.k8s.local
 
 ---
 
-## Step 5 — Create S3 Bucket for Cluster State
+## Step 5 Create S3 Bucket for Cluster State
 
 kops stores all cluster configuration and state in an S3 bucket.
 
@@ -237,7 +237,7 @@ export KOPS_STATE_STORE=s3://my-kops-state-store
 
 ---
 
-## Step 6 — Generate SSH Key Pair
+## Step 6 Generate SSH Key Pair
 
 kops uses SSH to access nodes for provisioning and debugging.
 
@@ -249,7 +249,7 @@ ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N ""
 
 ---
 
-## Step 7 — Create the Cluster
+## Step 7 Create the Cluster
 
 > Set your cluster name as an environment variable
 
@@ -257,7 +257,7 @@ ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N ""
 export NAME=mycluster.k8s.yourdomain.com
 ```
 
-> Create the cluster definition — this does NOT provision anything yet, it only writes config to S3
+> Create the cluster definition this does NOT provision anything yet, it only writes config to S3
 
 ```bash
 kops create cluster \
@@ -294,7 +294,7 @@ kops edit ig control-plane-us-east-1a --name=${NAME}
 
 ---
 
-## Step 8 — Apply and Build the Cluster
+## Step 8 Apply and Build the Cluster
 
 > Preview what kops will create before applying — dry run
 
@@ -302,7 +302,7 @@ kops edit ig control-plane-us-east-1a --name=${NAME}
 kops update cluster --name=${NAME} --yes --dry-run
 ```
 
-> Apply the cluster — this provisions all AWS resources (takes 5–10 minutes)
+> Apply the cluster this provisions all AWS resources (takes 5–10 minutes)
 
 ```bash
 kops update cluster --name=${NAME} --yes
@@ -322,7 +322,7 @@ kubectl get nodes
 
 ---
 
-## Step 9 — Verify the Cluster
+## Step 9 Verify the Cluster
 
 > Check all system pods are running
 
