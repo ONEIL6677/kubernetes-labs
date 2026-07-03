@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-demo
+spec:
+  containers:
+    - name: web-demo
+      image: web-demo
+      imagePullPolicy: Never  # Uses my local image without checking an online registry 
+      resources:
+        requests:               # what the scheduler reserves for this Pod on a node.
+                                 # Used to decide WHERE the Pod can be placed.
+          cpu: "100m"            # 100 millicores 0.1 of one CPU core
+          memory: "128Mi"        # 128 mebibytes reserved
+
+        limits:                 # the hard ceiling this container cannot exceed.
+          cpu: "250m"            # can burst up to 0.25 of a core; CPU over this is
+                                 # throttled, not killed
+          memory: "256Mi"        # exceeding this gets the container OOMKilled
+                                 # this is the number to watch against actual usage
