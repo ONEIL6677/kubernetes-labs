@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-demo
+spec:
+  containers:
+    - name: web-demo
+      image: web-demo
+      imagePullPolicy: Never  # Uses my local image without checking an online registry
+      ports:
+        - containerPort: 8080
+
+      startupProbe:                # Runs FIRST. Liveness/readiness don't start
+                                    # checking until this passes even once protects
+                                    # slow-booting apps from being killed prematurely.
+        httpGet:
+          path: /healthz
+          port: 8080
+        failureThreshold: 30        # allow up to 30 failed checks...
+        periodSeconds: 2            # ...at 2s apart = up to 60s to boot before
+                                    # it's considered a failed startup
+
+      readinessProbe:               # Controls whether this Pod receives traffic.
+        httpGet:
+          path: /ready               # often a DIFFERENT endpoint than liveness
+          port: 8080                 # can check "are my dependencies reachable?"
+        initialDelaySeconds: 3
+        periodSeconds: 5             # check every 5s
+        failureThreshold: 3          # 3 consecutive failures = marked NotReady,
+                                      # pulled out of Service routing (no restart)
+
+      livenessProbe:                # Controls whether this container gets killed.
+        httpGet:
+          path: /healthz             # usually a LIGHTWEIGHT check just "is the
+          port: 8080                 # process responding at all," not full health
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        failureThreshold: 3          # 3 consecutive failures = container restarted
