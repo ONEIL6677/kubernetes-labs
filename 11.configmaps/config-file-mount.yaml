@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-demo
+spec:
+  containers:
+    - name: web-demo
+      image: web-demo:1.0
+      volumeMounts:
+        - name: config-volume        # must match the volume name below
+          mountPath: /app/config     # the ConfigMap's keys appear as FILES
+                                      # inside this directory — e.g. this Pod
+                                      # will have /app/config/config.json
+  volumes:
+    - name: config-volume
+      configMap:
+        name: web-demo-config        # the ConfigMap to mount
