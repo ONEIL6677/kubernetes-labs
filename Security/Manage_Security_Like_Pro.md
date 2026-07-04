@@ -47,7 +47,7 @@ In this example, we are using server.crt and server.key files for the server cer
 
 In the same kube-apiserver.yaml file, configure the authentication method you prefer, such as client certificates or bearer tokens. Here is an example of how to use client certificates.
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -73,7 +73,7 @@ In this example, we are using x509 authentication and configuring the request he
 
 Configure RBAC to restrict access to the Kubernetes API server based on roles and permissions. Here is an example of how to configure RBAC.
 
-```
+```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -103,7 +103,7 @@ In this example, we are creating a ClusterRole called api-server-reader that all
 
 Use tools like Kubernetes Audit to monitor and audit the Kubernetes API server. Here is an example of how to configure Kubernetes Audit.
 
-```
+```yaml
 apiVersion: audit.k8s.io/v1beta1
 kind: Policy
 rules:
@@ -144,7 +144,7 @@ You can enable the Encryption Provider feature by adding the --encryption-provid
 
 Here is an example of a simple encryption provider configuration file:
 
-```
+```yaml
 apiVersion: apiserver.config.k8s.io/v1
 kind: EncryptionConfiguration
 resources:
@@ -175,7 +175,7 @@ To use the Encryption Provider to encrypt data at rest, you need to configure Ku
 
 Here is an example of a Kubernetes Secret definition that uses the Encryption Provider:
 
-```
+```yaml
 apiVersion: v1
 kind: Secret
 metadata:
