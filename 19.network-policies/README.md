@@ -64,10 +64,12 @@ From a Pod running in the *same* namespace as the Service it's trying to reach, 
 
 Pods themselves can also get DNS entries, though this is used far less often directly — it mostly comes up in the context of a headless Service backing a StatefulSet, where each individual Pod's stable identity matters and something needs to be able to address one specific replica by name rather than being transparently load-balanced across all of them.
 
+> From inside any Pod, you can observe this resolution directly
 ```bash
-# From inside any Pod, you can observe this resolution directly
 kubectl exec web-demo -- nslookup web-demo-service
-# Or, testing DNS from a fresh temporary Pod
+```
+> Or, testing DNS from a fresh temporary Pod
+```bash
 kubectl run tmp-shell --rm -it --image=busybox -- \
   nslookup web-demo-service.default.svc.cluster.local
 ```
@@ -267,23 +269,31 @@ A third mistake is creating Ingress objects while assuming they alone are suffic
 
 ## Quick Reference
 
+> Confirm Pod IPs and which node each Pod landed on
 ```bash
-# Confirm Pod IPs and which node each Pod landed on
 kubectl get pods -o wide
-
-# Confirm a Service actually has healthy Pods behind it
+```
+> Confirm a Service actually has healthy Pods behind it
+```bash
 kubectl get endpoints web-demo-service
-
-# Test DNS resolution from inside the cluster's own network
+```
+> Test DNS resolution from inside the cluster's own network
+```bash
 kubectl run tmp-shell --rm -it --image=busybox -- nslookup web-demo-service
-
-# List NetworkPolicies currently applied, and see exactly what a
-# specific one is restricting
+```
+> List NetworkPolicies currently applied, and see exactly what a
+> specific one is restricting
+```bash
 kubectl get networkpolicy
+```
+```bash
 kubectl describe networkpolicy web-demo-allow-frontend-only
-
-# List Ingress objects and confirm which controller and hostnames
-# they're configured for
+```
+> List Ingress objects and confirm which controller and hostnames
+> they're configured for
+```bash
 kubectl get ingress
+```
+```bash
 kubectl describe ingress web-demo-ingress
 ```
