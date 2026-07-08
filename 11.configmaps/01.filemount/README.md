@@ -37,16 +37,12 @@ minikube    Ready    control-plane
 
 # 2. Create the Courses Text File
 
-First create a file named:
-
-```
-courses
-```
+First create a file named: courses.txt
 
 Command:
 
 ```bash
-nano courses
+nano courses.txt
 ```
 
 Add the following content:
@@ -63,7 +59,7 @@ Save the file.
 Verify the content:
 
 ```bash
-cat courses
+cat courses.txt
 ```
 
 Output:
@@ -81,16 +77,12 @@ devops
 
 A ConfigMap stores configuration data separately from the application.
 
-We will create a ConfigMap called:
-
-```
-course-config
-```
+We will create a ConfigMap called: course-config
 
 Command:
 
 ```bash
-kubectl create configmap course-config --from-file=courses
+kubectl create configmap course-config --from-file=courses.txt
 ```
 
 Explanation:
@@ -140,11 +132,7 @@ devops
 
 # 5. Create a Pod YAML File
 
-Create a file:
-
-```
-nginx-pod.yaml
-```
+Create a file: nginx-pod.yaml
 
 Command:
 
@@ -310,13 +298,13 @@ ls
 ```
 >Output:
 ```
-courses
+courses.txt
 ```
 
 Display the file:
 
 ```bash
-cat courses
+cat courses.txt
 ```
 
 Output:
@@ -328,7 +316,11 @@ html
 devops
 ```
 
----
+exit the container
+command
+```
+exit
+```
 
 # 10. Access the File Through Nginx
 
@@ -356,7 +348,7 @@ IP:
 Test using:
 
 ```bash
-curl http://10.244.0.5/courses/courses
+curl http://10.244.0.5/courses/courses.txt
 ```
 
 Output:
@@ -402,7 +394,7 @@ In this exercise we learned:
 The final architecture is:
 
 ```
-courses file
+courses.txt file
      |
      |
      v
@@ -419,7 +411,7 @@ nginx:alpine container
      |
      |
      v
-/usr/share/nginx/html/courses/courses
+/usr/share/nginx/html/courses/courses.txt
 ```
 
 The application container does not store the configuration directly. Kubernetes injects the configuration using a ConfigMap.

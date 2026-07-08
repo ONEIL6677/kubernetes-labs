@@ -58,7 +58,7 @@ COURSE3=html
 COURSE4=devops
 ```
 
-Save the file.
+Save the file. by pressing ctrl+x then press y and Enter
 
 Check the content:
 
@@ -159,24 +159,22 @@ nano nginx-env-pod.yaml
 Add:
 
 ```yaml
-apiVersion: v1
-kind: Pod
-
-metadata:
-  name: nginx-env-pod
-
-
-spec:
-
-  containers:
-
-  - name: nginx-container
-    image: nginx:alpine
-
-    envFrom:
-
-    - configMapRef:
-        name: course-config
+apiVersion: v1                       
+kind: Pod                            
+metadata:                           
+  name: web-demo                     
+  labels:                           
+    app: web-demo                                    
+spec:                                
+  containers:                        
+    - name: web-demo                 
+      image: web-demo
+      imagePullPolicy: Never  # Uses your local image without checking an online registry        
+      ports:                         
+        - containerPort: 8080        
+       envFrom:
+     - configMapRef:
+            name: course-config
 ```
 
 ---

@@ -1,0 +1,44 @@
+apiVersion: v1
+
+kind: Pod
+
+metadata:
+  name: web-demo
+
+
+spec:
+
+  containers:
+
+  # Main application container
+  - name: web-demo
+
+    image: web-demo
+    imagePullPolicy: Never
+    volumeMounts:
+
+    - name: shared-logs
+
+      mountPath: /app/logs
+
+
+
+  # Sidecar log container
+  - name: log-shipper
+
+    image: log-shipper:1.0
+
+    volumeMounts:
+
+    - name: shared-logs
+
+      mountPath: /var/log/incoming
+
+
+
+  # Shared temporary storage
+  volumes:
+
+  - name: shared-logs
+
+    emptyDir: {}

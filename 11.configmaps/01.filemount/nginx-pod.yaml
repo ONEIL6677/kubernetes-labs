@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-course-pod
+
+spec:
+
+  containers:
+
+  - name: nginx-container
+    image: web-demo
+    imagePullPolicy: Never  # Uses your local image without checking an online registry  
+
+    volumeMounts:
+    - name: course-volume
+      mountPath: /usr/share/nginx/html/courses
+
+
+  volumes:
+
+  - name: course-volume
+    configMap:
+      name: course-config
