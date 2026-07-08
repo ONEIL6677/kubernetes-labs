@@ -46,19 +46,35 @@ data:
   DB_PASSWORD: c3VwZXJzZWNyZXQxMjM=
   API_KEY: YWJjZGVmZ2hpams=
 ```
+> Create secret
+```bash
+kubectl apply -f secret.yaml
+``` 
+> Verify or list secrets
+```bash
+kubectl get secrets
+```
+> See what is inside that secrets
+```bash
+kubectl describe secrets web-demo-secret
+```
 
 Because manually base64-encoding values by hand is error-prone and awkward, the far more common and recommended way to create a Secret is to let `kubectl` do the encoding for you, either from literal values typed directly on the command line, or from files on disk.
 
+
+> Create a Secret directly from literal values — kubectl handles the
+> base64 encoding automatically, so you type the real plain-text value
+> here, not an already-encoded one.
 ```bash
-# Create a Secret directly from literal values — kubectl handles the
-# base64 encoding automatically, so you type the real plain-text value
-# here, not an already-encoded one.
 kubectl create secret generic web-demo-secret \
   --from-literal=DB_PASSWORD=supersecret123 \
   --from-literal=API_KEY=abcdefghijk
+```
 
-# Create a Secret from the contents of files on disk — useful for
-# certificates, private keys, or any file-based credential.
+> Create a Secret from the contents of files on disk — useful for
+> certificates, private keys, or any file-based credential.
+
+```bash
 kubectl create secret generic web-demo-tls \
   --from-file=tls.crt=./server.crt \
   --from-file=tls.key=./server.key

@@ -13,8 +13,11 @@ spec:
   # Main application container
   - name: web-demo
 
+    # image: web-demo:1.0 
+    #delete two line bellow and un comment this line above
     image: web-demo
-    imagePullPolicy: Never
+    imagePullPolicy: Never  # Using my local image without checking an online registry 
+
     volumeMounts:
 
     - name: shared-logs
@@ -26,7 +29,10 @@ spec:
   # Sidecar log container
   - name: log-shipper
 
-    image: log-shipper:1.0
+    # image: log-shipper:1.0
+   #delete two line bellow and un comment this line above
+    image: web-demo
+    imagePullPolicy: Never  # Using my local image without checking an online registry 
 
     volumeMounts:
 
