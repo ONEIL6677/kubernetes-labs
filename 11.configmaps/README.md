@@ -26,15 +26,15 @@ There are two ways to get data from a ConfigMap into a container: as **environme
 
 ```yaml
 apiVersion: v1
-kind: ConfigMap                # ConfigMap has no `spec` — it just uses `data`
+kind: ConfigMap                # ConfigMap has no `spec` it just uses `data`
                                 # directly, since it's holding plain key-value pairs.
 metadata:
   name: web-demo-config
 data:
-  APP_ENV: "production"         # simple key: value pairs — become individual
+  APP_ENV: "production"         # simple key: value pairs become individual
   LOG_LEVEL: "info"              # environment variables when consumed via envFrom
 
-  config.json: |                # the `|` preserves this as a multi-line string —
+  config.json: |                # the `|` preserves this as a multi-line string
     {                            # useful when you want to mount a whole file,
       "feature_flags": {         # not just a single env var
         "new_ui": true
@@ -42,13 +42,14 @@ data:
     }
 ```
 
+> Create the same ConfigMap without writing YAML by hand
 ```bash
-# Create the same ConfigMap without writing YAML by hand
 kubectl create configmap web-demo-config \
   --from-literal=APP_ENV=production \
   --from-literal=LOG_LEVEL=info
-
-# Or build one directly from a file on disk
+  ```
+> Or build one directly from a file on disc
+```bash
 kubectl create configmap web-demo-config --from-file=config.json
 ```
 
@@ -64,7 +65,7 @@ spec:
     - name: web-demo
       image: web-demo:1.0
       envFrom:                     # pulls in EVERY key in the ConfigMap as an
-        - configMapRef:             # env var automatically — no need to list
+        - configMapRef:             # env var automatically no need to list
             name: web-demo-config   # each one individually
 
       # --- OR, if you only want ONE specific key, or want to rename it ---
@@ -90,7 +91,7 @@ spec:
       volumeMounts:
         - name: config-volume        # must match the volume name below
           mountPath: /app/config     # the ConfigMap's keys appear as FILES
-                                      # inside this directory — e.g. this Pod
+                                      # inside this directory e.g. this Pod
                                       # will have /app/config/config.json
   volumes:
     - name: config-volume
@@ -113,8 +114,8 @@ Editing a ConfigMap does **not** restart Pods that are already using it.
 - If consumed as **env vars**: the running container never sees the change — you must manually restart the Pod (or roll the Deployment) to pick it up.
 - If consumed as a **mounted file**: the file on disk updates automatically within about a minute, but your application still has to notice and re-read it — most apps don't watch config files for changes by default.
 
+> Force a Deployment to pick up a ConfigMap change (env var case)
 ```bash
-# Force a Deployment to pick up a ConfigMap change (env var case)
 kubectl rollout restart deployment/web-demo
 ```
 
@@ -122,7 +123,12 @@ kubectl rollout restart deployment/web-demo
 
 Use a **Secret** instead of a ConfigMap for anything sensitive (passwords, API keys, tokens) — same mechanics, but Secrets are base64-encoded at rest and can be restricted with RBAC more tightly. A ConfigMap is plain text, visible to anyone who can read it.
 
+> inspect a ConfigMap
 ```bash
-kubectl get configmap web-demo-config -o yaml   # inspect a ConfigMap
-kubectl edit configmap web-demo-config           # edit it live
+kubectl get configmap web-demo-config -o yaml   
+```
+          
+> edit it live
+```bash
+kubectl edit configmap web-demo-config 
 ```
