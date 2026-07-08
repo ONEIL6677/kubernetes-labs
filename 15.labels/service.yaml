@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-demo-service
+spec:
+  selector:
+    # Any Pod anywhere in this namespace carrying the label app=web-demo
+    # becomes a valid destination for traffic sent to this Service —
+    # regardless of which Deployment, ReplicaSet, or bare Pod definition
+    # happened to create it, and regardless of what else that Pod's
+    # labels might say beyond this one match.
+    app: web-demo
+  ports:
+    - port: 80
+      targetPort: 8080

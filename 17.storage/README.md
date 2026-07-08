@@ -85,8 +85,8 @@ A **reclaim policy** of `Delete` means that when the PVC is deleted, the underly
 
 A reclaim policy of `Retain` means that when the PVC is deleted, the underlying PersistentVolume and its data are left alone entirely. The PersistentVolume object itself moves into a "Released" state, and someone has to manually intervene to either clean it up or make it usable again for a future claim, but the actual data on disk is never automatically destroyed. For anything genuinely critical, changing the reclaim policy to `Retain`, or otherwise ensuring proper backups exist independently of the PVC's lifecycle, is a deliberate decision worth making rather than leaving to whatever a StorageClass happened to default to.
 
+> Check the reclaim policy currently set on a specific PersistentVolume
 ```bash
-# Check the reclaim policy currently set on a specific PersistentVolume
 kubectl get pv <pv-name> -o jsonpath='{.spec.persistentVolumeReclaimPolicy}'
 ```
 
@@ -124,23 +124,27 @@ A **Deployment** is a poor fit for this situation, because every Pod a Deploymen
 
 ## Checking the State of Things
 
+
+> See all PersistentVolumeClaims and whether they've successfully
+> bound to a PersistentVolume yet
 ```bash
-# See all PersistentVolumeClaims and whether they've successfully
-# bound to a PersistentVolume yet
 kubectl get pvc
-
-# See the actual PersistentVolumes in the cluster, including which
-# claim (if any) each one is currently bound to
+```
+> See the actual PersistentVolumes in the cluster, including which
+> claim (if any) each one is currently bound to
+```bash
 kubectl get pv
-
-# Full detail on a specific claim — useful when a PVC is stuck in a
-# "Pending" state and never binds, since the events shown here usually
-# explain exactly why (for example, no StorageClass could satisfy the
-# requested access mode)
+```
+> Full detail on a specific claim — useful when a PVC is stuck in a
+> "Pending" state and never binds, since the events shown here usually
+> explain exactly why (for example, no StorageClass could satisfy the
+> requested access mode)
+```bash
 kubectl describe pvc web-demo-data
-
-# List the StorageClasses available in this cluster, and see which one
-# (if any) is marked as the default
+```
+> List the StorageClasses available in this cluster, and see which one
+> (if any) is marked as the default
+```bash
 kubectl get storageclass
 ```
 

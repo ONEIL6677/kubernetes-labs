@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-demo
+  labels:
+    # There is nothing structurally special about any of these keys —
+    # Kubernetes itself doesn't require or reserve "app", "tier", or
+    # "version". They're conventions the community has settled on, not
+    # rules the API server enforces.
+    app: web-demo
+    tier: backend
+    version: v1
+    environment: production
+spec:
+  containers:
+    - name: web-demo
+      image: web-demo:1.0

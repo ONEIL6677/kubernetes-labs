@@ -129,44 +129,51 @@ spec:
 
 ## Watching and Controlling a Rollout
 
+> Apply a change (for example, after editing the image tag above)
 ```bash
-# Apply a change (for example, after editing the image tag above)
 kubectl apply -f web-demo-deployment.yaml
-
-# Watch the rollout happen in real time — this blocks until the
-# rollout finishes, fails, or you interrupt it
+```
+> Watch the rollout happen in real time this blocks until the
+> rollout finishes, fails, or you interrupt it
+```bash
 kubectl rollout status deployment/web-demo
-
-# A faster way to change just the image without editing the YAML file
-# directly — genuinely common as part of a CI/CD pipeline step
-kubectl set image deployment/web-demo web-demo=web-demo:1.2
-
-# See the history of rollouts this Deployment has been through
+```
+> A faster way to change just the image without editing the YAML file
+> directly genuinely common as part of a CI/CD pipeline step
+```bash
+kubectl set image deployment/web-demo web-demo=web-demo
+```
+> See the history of rollouts this Deployment has been through
+```bash
 kubectl rollout history deployment/web-demo
-
-# Roll back to the immediately previous version — this works instantly
-# because, as explained above, the old ReplicaSet and its Pod template
-# were kept around rather than deleted
+```
+> Roll back to the immediately previous version — this works instantly
+> because, as explained above, the old ReplicaSet and its Pod template
+> were kept around rather than deleted
+```bash
 kubectl rollout undo deployment/web-demo
-
-# Roll back to a specific numbered revision, rather than just "the
-# previous one" — useful if the last two rollouts were both bad and you
-# need to go back further than one step
+```
+> Roll back to a specific numbered revision, rather than just "the
+> previous one" useful if the last two rollouts were both bad and you
+> need to go back further than one step
+```bash
 kubectl rollout undo deployment/web-demo --to-revision=3
-
-# Temporarily halt a rollout partway through, for example if you notice
-# something looking wrong and want to stop before it reaches every Pod
+```
+> Temporarily halt a rollout partway through, for example if you notice
+> something looking wrong and want to stop before it reaches every Pod
+```bash
 kubectl rollout pause deployment/web-demo
-
-# Resume a paused rollout
+```
+> Resume a paused rollout
+```bash
 kubectl rollout resume deployment/web-demo
 ```
 
 ## Scaling
 
+> Change the replica count directly, without touching the image or
+> anything else about the Pod template
 ```bash
-# Change the replica count directly, without touching the image or
-# anything else about the Pod template
 kubectl scale deployment/web-demo --replicas=5
 ```
 
@@ -188,17 +195,19 @@ A third mistake is not setting a `readinessProbe` at all on a Deployment's Pod t
 
 ## Checking the Current State
 
+> High-level view: desired vs. current vs. up-to-date vs. available
+> replica counts, all in one line
 ```bash
-# High-level view: desired vs. current vs. up-to-date vs. available
-# replica counts, all in one line
 kubectl get deployment web-demo
-
-# Full detail, including recent events and which ReplicaSet is
-# currently active
+```
+> Full detail, including recent events and which ReplicaSet is
+> currently active
+```bash
 kubectl describe deployment web-demo
-
-# See the ReplicaSets a Deployment has created over time — normally
-# you'll see the currently active one with Pods, and one or more older
-# ones scaled down to zero, kept around for rollback purposes
+```
+> See the ReplicaSets a Deployment has created over time — normally
+> you'll see the currently active one with Pods, and one or more older
+> ones scaled down to zero, kept around for rollback purposes
+```bash
 kubectl get replicasets -l app=web-demo
 ```

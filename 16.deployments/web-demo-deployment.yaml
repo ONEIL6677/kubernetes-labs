@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-demo
+  labels:
+    app: web-demo
+spec:
+  replicas: 3
+  # This is the number of Pods the Deployment will continuously try to
+  # keep running. If a Pod is deleted, crashes and can't recover, or its
+  # node fails, the underlying ReplicaSet notices the count has dropped
+  # below this number and creates a replacement automatically, without
+  # you needing to intervene.
+
+  selector:
+    matchLabels:
+      app: web-demo
+    # This must match template.metadata.labels below, exactly. This is
+    # the query the ReplicaSet runs to count "how many Pods belonging to
+    # me currently exist" — if it doesn't match the Pods this same
+    # Deployment creates, Kubernetes rejects the manifest outright.
+
+  strategy:
+    type: RollingUpdate
+    # RollingUpdate replaces old Pods with new ones gradually, keeping
+    # the application available throughout the update. The alternative,
+    # "Recreate", terminates every existing Pod first and only then
+    # creates the new ones — meaning guaranteed downtime during the
+    # switch, but useful when your application genuinely cannot have
+    # both old and new versions running at the same time, for example
+    # if two versions can't safely share the same database schema.
+    rollingUpdate:
+      maxUnavailable: 1
+      # During a rollout, at most this many Pods (relative to the
+      # desired replica count) are allowed to be unavailable at once.
+      # With replicas: 3 and maxUnavailable: 1, the Deployment will
+      # never let more than one Pod be down for the update at any
+      # given moment, keeping at least 2 of the 3 serving traffic.
+      maxSurge: 1
+      # During a rollout, at most this many EXTRA Pods beyond the
+      # desired replica count are allowed to exist temporarily. With
+      # replicas: 3 and maxSurge: 1, the Deployment is allowed to
+      # briefly run up to 4 Pods at once while transitioning, giving
+      # the new version time to become ready before an old one is
+      # removed.
+
+  template:
+    # Everything from here down is a full Pod specification, nested
+    # inside the Deployment. This exact block is what gets stamped out
+    # multiple times to create the actual Pods, and it's also the part
+    # that changes whenever you deploy a new version — a new image tag
+    # here is what triggers the whole rolling update process described
+    # above.
+    metadata:
+      labels:
+        app: web-demo
+        # Every Pod this Deployment creates gets this label, which is
+        # what makes it match the selector above.
+    spec:
+      containers:
+        - name: web-demo
+          image: web-demo
+          imagePullPolicy: Never  # Uses your local image without checking an online registry 
+          
+          # Bumping this tag and re-applying the manifest is the single
+          # most common Deployment operation there is — it's what
+          # triggers the rolling update mechanism described above.
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            periodSeconds: 5
+            # The readiness probe matters enormously during a rolling
+            # update specifically: a newly created Pod is not counted
+            # as "available" by the rollout process until it passes
+            # this check, which is what actually paces the whole
+            # rollout and prevents Kubernetes from routing traffic to
+            # a new Pod before it's actually ready to serve it.
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"

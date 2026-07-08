@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-demo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      # This is the query the ReplicaSet controller runs continuously:
+      # "how many Pods currently exist with the label app=web-demo?"
+      # It is not a list of specific Pods it's a live, ongoing filter.
+      app: web-demo
+  template:
+    metadata:
+      labels:
+        # This is the label that gets stamped onto every Pod this
+        # Deployment creates. It MUST include everything listed under
+        # selector.matchLabels above, or Kubernetes will reject this
+        # manifest outright with a validation error, because a
+        # Deployment whose own Pods don't match its own selector would
+        # immediately try to create endless new Pods to satisfy a
+        # selector its existing Pods can never match.
+        app: web-demo
+    spec:
+      containers:
+        - name: web-demo
+          image: web-demo:1.0

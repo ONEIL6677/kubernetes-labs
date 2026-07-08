@@ -2,7 +2,7 @@
 
 ## What a Label Actually Is
 
-A **label** is a small key-value pair attached to an object's metadata, and on its own it does almost nothing. A label doesn't configure behavior, doesn't affect how a Pod runs, and Kubernetes doesn't interpret the text of a label in any special way. What makes labels genuinely important is that almost every other piece of Kubernetes machinery — Services, Deployments, ReplicaSets, NetworkPolicies, and more — works by **selecting** a group of objects based on matching their labels, rather than by referring to those objects by name. Understanding labels really means understanding this selection mechanism, because that's where all of the actual behavior comes from.
+A **label** is a small key-value pair attached to an object's metadata, and on its own it does almost nothing. A label doesn't configure behavior, doesn't affect how a Pod runs, and Kubernetes doesn't interpret the text of a label in any special way. What makes labels genuinely important is that almost every other piece of Kubernetes machinery Services, Deployments, ReplicaSets, NetworkPolicies, and more works by **selecting** a group of objects based on matching their labels, rather than by referring to those objects by name. Understanding labels really means understanding this selection mechanism, because that's where all of the actual behavior comes from.
 
 This is a deliberately loose and dynamic way of grouping things, and it's worth sitting with why Kubernetes was designed this way instead of just letting a Deployment keep a fixed list of the exact Pod names it's responsible for. Pods in Kubernetes are constantly being created and destroyed — a Deployment replacing an unhealthy Pod, a rolling update swapping old Pods for new ones, the cluster autoscaler adding and removing capacity — and a fixed list of names would need to be rewritten constantly to stay accurate. A label selector doesn't have this problem: it just says "anything with this label, whenever it exists, belongs to this group," and Kubernetes continuously re-evaluates that membership rather than tracking it as a static list anywhere.
 
@@ -26,7 +26,7 @@ graph TB
     style P3 fill:#fecaca,stroke:#b91c1c,color:#7f1d1d
 ```
 
-Notice in the diagram that Pod C isn't excluded by name or by any special configuration — it's simply excluded because its labels don't happen to match what the Service is looking for. This is the entire mechanism, in full: matching key-value pairs, nothing more exotic than that.
+Notice in the diagram that Pod C isn't excluded by name or by any special configuration it's simply excluded because its labels don't happen to match what the Service is looking for. This is the entire mechanism, in full: matching key-value pairs, nothing more exotic than that.
 
 ## Attaching Labels to an Object
 
@@ -52,9 +52,9 @@ spec:
       image: web-demo:1.0
 ```
 
-## How a Deployment Actually Uses Labels — the Part That Trips People Up
+## How a Deployment Actually Uses Labels the Part That Trips People Up
 
-This is the single most important relationship to understand clearly, because a very common early mistake comes directly from misunderstanding it. A Deployment does not simply "create three Pods." What it actually does is manage a **ReplicaSet**, and that ReplicaSet's entire job is to continuously check the cluster for Pods matching a specific label selector, and to create or delete Pods as needed until the number matching that selector equals the desired replica count. The Pods it creates are stamped from a template, and that template's own labels are what make the Pods match the selector in the first place — but the selector and the template's labels are two separate fields that you write independently, and Kubernetes requires them to agree.
+This is the single most important relationship to understand clearly, because a very common early mistake comes directly from misunderstanding it. A Deployment does not simply "create three Pods." What it actually does is manage a **ReplicaSet**, and that ReplicaSet's entire job is to continuously check the cluster for Pods matching a specific label selector, and to create or delete Pods as needed until the number matching that selector equals the desired replica count. The Pods it creates are stamped from a template, and that template's own labels are what make the Pods match the selector in the first place but the selector and the template's labels are two separate fields that you write independently, and Kubernetes requires them to agree.
 
 ```yaml
 apiVersion: apps/v1
@@ -67,7 +67,7 @@ spec:
     matchLabels:
       # This is the query the ReplicaSet controller runs continuously:
       # "how many Pods currently exist with the label app=web-demo?"
-      # It is not a list of specific Pods — it's a live, ongoing filter.
+      # It is not a list of specific Pods it's a live, ongoing filter.
       app: web-demo
   template:
     metadata:
@@ -116,39 +116,46 @@ This has a genuinely useful practical consequence worth calling out directly: be
 
 The same selection logic that Services and Deployments use internally is available to you directly from the command line, and it's genuinely useful for narrowing down what you're looking at once a cluster has more than a handful of objects in it.
 
+> Show only Pods carrying this exact label
 ```bash
-# Show only Pods carrying this exact label
 kubectl get pods -l app=web-demo
-
-# Combine multiple label requirements — this only matches Pods that
-# have BOTH of these labels set to these exact values
+```
+> Combine multiple label requirements this only matches Pods that
+> have BOTH of these labels set to these exact values
+```bash
 kubectl get pods -l app=web-demo,environment=production
-
-# Show Pods where a label exists at all, regardless of its value
+```
+> Show Pods where a label exists at all, regardless of its value
+```bash
 kubectl get pods -l 'version'
-
-# Show Pods where a label's value is one of several options
+```
+> Show Pods where a label's value is one of several options
+```bash
 kubectl get pods -l 'version in (v1,v2)'
-
-# Show Pods that do NOT have a particular label
+```
+> Show Pods that do NOT have a particular label
+```bash
 kubectl get pods -l '!version'
-
-# Show every label attached to each Pod in the output, rather than the
-# default columns — useful for a quick visual audit of what's actually
-# been applied
+```
+> Show every label attached to each Pod in the output, rather than the
+> default columns — useful for a quick visual audit of what's actually
+> been applied
+```bash
 kubectl get pods --show-labels
-
-# Add or change a label on an object that's already running, without
-# editing and reapplying the whole manifest
+```
+> Add or change a label on an object that's already running, without
+> editing and reapplying the whole manifest
+```bash
 kubectl label pod web-demo tier=backend
-
-# Remove a label entirely by adding a dash directly after its key
+```
+> Remove a label entirely by adding a dash directly after its key
+```bash
 kubectl label pod web-demo tier-
 ```
 
-## Labels vs. Annotations — a Distinction Worth Getting Right
+## Labels vs. Annotations a Distinction Worth Getting Right
 
-Kubernetes objects also support **annotations**, which look structurally identical to labels — they're both flat key-value maps under `metadata` — and this similarity is exactly what causes confusion about when to use which. The difference isn't about the data itself; it's about what Kubernetes' own selection machinery is allowed to do with it. Labels are specifically designed to be queried and matched against by selectors, and because of that, Kubernetes imposes some restrictions on label keys and values to keep them efficient to index and compare. Annotations carry no such restriction and can hold much larger, more free-form values, but in exchange, nothing in Kubernetes will ever select or filter objects based on an annotation's contents — they exist purely for attaching information for humans or external tooling to read, such as a build number, a description, or configuration for a specific controller that knows to look for that particular annotation key.
+Kubernetes objects also support **annotations**, which look structurally identical to labels they're both flat key-value maps under `metadata` and this similarity is exactly what causes confusion about when to use which. The difference isn't about the data itself; it's about what Kubernetes' own selection machinery is allowed to do with it. Labels are specifically designed to be queried and matched against by selectors, and because of that, Kubernetes imposes some restrictions on label keys and values to keep them efficient to index and compare. Annotations carry no such restriction and can hold much larger, more free-form values, but in exchange, nothing in Kubernetes will ever select or filter objects based on an annotation's contents they exist purely for attaching information for humans or external tooling to read, such as a build number, a description, or configuration for a specific controller that knows to look for that particular annotation key.
 
 A reasonable rule of thumb: if you can imagine wanting to run `kubectl get pods -l <that-key>=<that-value>` to find a group of objects, it belongs in `labels`. If it's just descriptive metadata that nothing will ever need to filter on, it belongs in `annotations` instead.
 
@@ -177,16 +184,18 @@ A third mistake is changing a label on a Pod template after a Deployment already
 
 ## Checking What's Actually Selecting What
 
+> Confirm exactly which labels a running Pod has
 ```bash
-# Confirm exactly which labels a running Pod has
 kubectl get pod web-demo --show-labels
-
-# Confirm exactly which selector a Service is using, and cross-check it
-# against the Pods you expect it to be routing to
+```
+> Confirm exactly which selector a Service is using, and cross-check it
+> against the Pods you expect it to be routing to
+```bash
 kubectl describe service web-demo-service
-
-# The most direct way to verify a Service actually found matching Pods:
-# if this list is empty, the Service's selector isn't matching anything,
-# and that's almost always a labels problem, not a networking problem
+```
+> The most direct way to verify a Service actually found matching Pods:
+> if this list is empty, the Service's selector isn't matching anything,
+> and that's almost always a labels problem, not a networking problem
+```bash
 kubectl get endpoints web-demo-service
 ```
